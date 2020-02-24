@@ -34,3 +34,6 @@ def login(request):
 
 def homepage(request):
     return render(request, 'homepage.html')
+
+def saved_cities(request):
+    return render(request, 'saved_cities.html')

@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'login_app',
+    'pollution_app',
+    'weather_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

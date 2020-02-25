@@ -52,9 +52,10 @@
     {% endif %}
 
     <form action="/save" method ="POST">
+      {% csrf_token %}
         <input type="hidden" name='savecity' value ="{{city_weather.city}}">
         <p>Current Weather in {{city_weather.city}}:</p>
-        <input type="hidden" name='savecity' value ="{{city_weather.temperature}}">
+        <input type="hidden" name='temp' value ="{{city_weather.temperature}}">
         <p>Temperature = {{city_weather.temperature}}°Fahrenheit</p>
         <p><img src = 'http://openweathermap.org/img/wn/{{city_weather.icon}}@2x.png'></p>
         <div class="container-fluid">

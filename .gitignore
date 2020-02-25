@@ -1,4 +1,8 @@
 db.sqlite3
 ./migrations
 migrations
+<<<<<<< HEAD
 migrations/
+=======
+migrations/
+>>>>>>> d124ee25670747826bf1040e146cb13252d96ec9

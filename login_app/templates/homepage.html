@@ -39,11 +39,32 @@
           </ul>
         </div>
       </nav>
-      <div class="container-fluid">
-        <form class="form-inline my-2 my-lg-0" action = "/searchcity" method = "POST">
-            <input class="form-control mr-sm-2" type="text" name="city" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search New City</button>
-          </form>
-      </div>
+      <form action  = "/homepage" method="POST">
+        {% csrf_token %}
+        <p>City:<input type="text" name='city'></p>
+        <button type="submit">Get City Stats</button>
+    </form>
+    {% if messages %}
+    <ul class="messages">    
+        {% for message in messages %}    
+        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
+        {% endfor %}
+    {% endif %}
+
+    <form action="/save" method ="POST">
+        <input type="hidden" name='savecity' value ="{{city_weather.city}}">
+        <p>Current Weather in {{city_weather.city}}:</p>
+        <input type="hidden" name='savecity' value ="{{city_weather.temperature}}">
+        <p>Temperature = {{city_weather.temperature}}°Fahrenheit</p>
+        <p><img src = 'http://openweathermap.org/img/wn/{{city_weather.icon}}@2x.png'></p>
+        <div class="container-fluid">
+          <small>{{city_AQI.city}} Air Quality Index:</small> 
+          <input type="hidden" name='aqi' value ="{{city_AQI.aqi}}">
+          <div class="container-fluid" >{{city_AQI.aqi}}</div>
+          <div class="container-fluid" >{{city_AQI.impact}}</div>
+        </div>
+        <br>
+        <button type="submit">Save City Data!</button>
+    </form>
 </body>
 </html>

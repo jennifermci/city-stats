@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import *
 from django.contrib import messages
 import bcrypt
+import requests
 
 def index(request):
     return render(request,'index.html')
@@ -33,7 +34,50 @@ def login(request):
 # ------------------------------------------------------------------------------------------------------------------end login/logout and registration form
 
 def homepage(request):
-    return render(request, 'homepage.html')
+    pollution_url = 'https://api.waqi.info/feed/{}/?token=7d948b48a98a28662fa192ada26908dab5923434'
+    
+    if request.method=='POST':
+        city = request.POST['city']
+    else:
+        city = 'Seattle'
+
+    pollution_r = requests.get(pollution_url.format(city)).json()
+    
+    # try:
+    #     print(pollution_r['main']['temp'])
+    # except KeyError:
+    #     messages.error(request, "City name not found.")
+    #     return redirect ('/weather')
+
+    city_AQI = {
+        'city' : city,
+        'aqi' : pollution_r['data']['aqi'],
+        'impact': pollution_r['status'],
+    }
+
+    weather_url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=6aac762c309ab62e1a9c2663d6aff64a'
+
+
+    weather_r = requests.get(weather_url.format(city)).json()
+
+    # try:
+    #     print(weather_r['main']['temp'])
+    # except KeyError:
+    #     messages.error(request, "City name not found.")
+    #     return redirect ('/weather')
+
+    city_weather = {
+        'city': city,
+        'temperature':weather_r['main']['temp'],
+        'icon': weather_r['weather'][0]['icon']
+    }
+
+
+    context = {
+        'city_weather':city_weather,
+        'city_AQI' : city_AQI
+    }
+    return render(request, 'homepage.html', context)
 
 def saved_cities(request):
     return render(request, 'saved_cities.html')

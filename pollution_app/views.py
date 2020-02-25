@@ -14,7 +14,6 @@ def pollution(request):
         'city' : city,
         'aqi' : r['data']['aqi'],
         'impact': r['status'],
-
     }
     context = {
         'city_AQI' : city_AQI

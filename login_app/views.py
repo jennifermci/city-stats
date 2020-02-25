@@ -43,11 +43,11 @@ def homepage(request):
 
     pollution_r = requests.get(pollution_url.format(city)).json()
     
-    # try:
-    #     print(pollution_r['main']['temp'])
-    # except KeyError:
-    #     messages.error(request, "City name not found.")
-    #     return redirect ('/weather')
+    try:
+        print(pollution_r['status'])
+    except KeyError:
+        messages.error(request, "City name not found.")
+        return redirect ('/homepage')
 
     city_AQI = {
         'city' : city,
@@ -60,11 +60,11 @@ def homepage(request):
 
     weather_r = requests.get(weather_url.format(city)).json()
 
-    # try:
-    #     print(weather_r['main']['temp'])
-    # except KeyError:
-    #     messages.error(request, "City name not found.")
-    #     return redirect ('/weather')
+    try:
+        print(weather_r['main']['temp'])
+    except KeyError:
+        messages.error(request, "City name not found.")
+        return redirect ('/homepage')
 
     city_weather = {
         'city': city,
@@ -80,4 +80,23 @@ def homepage(request):
     return render(request, 'homepage.html', context)
 
 def saved_cities(request):
-    return render(request, 'saved_cities.html')
+    this_user = user.objects.get(id=request.session['userid'])
+    these_cities = City.objects.filter(added_by = this_user)
+    context = {
+        'cities':these_cities
+    }
+    return render(request, 'saved_cities.html', context)
+
+def save_new_city(request):
+    this_user = user.objects.get(id=request.session['userid'])
+
+    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user)
+
+    return redirect('/homepage')
+
+def my_cities_plot(request):
+    this_user = user.objects.get(id=request.session['userid'])
+    context = {
+        'user': this_user
+    }
+    return render(request, 'my_plot.html')

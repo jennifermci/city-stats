@@ -49,24 +49,14 @@
           </tr>
         </thead>
         <tbody>
+          {% for each in cities %}
           <tr>
-            <th scope="row">1</th>
-            <td>Seattle</td>
-            <td>45</td>
-            <td>5.1</td>
+            <td>{{each.id}}</td>
+            <td>{{each.city_name}}</td>
+            <td>{{each.temp}}</td>
+            <td>{{each.aqi}}</td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Bellevue</td>
-            <td>50</td>
-            <td>@3.9</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Los Angles</td>
-            <td>71</td>
-            <td>6.2</td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
 </body>

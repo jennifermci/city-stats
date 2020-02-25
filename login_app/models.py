@@ -51,3 +51,9 @@ class user(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = userManager()
+
+class City(models.Model):
+    city_name = models.CharField(max_length=45)
+    temp = models.IntegerField()
+    aqi = models.IntegerField()
+    added_by = models.ForeignKey(user, related_name='cities', on_delete = models.CASCADE)

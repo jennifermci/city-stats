@@ -8,5 +8,6 @@ urlpatterns = [
     path('login', views.login),
     path('homepage', views.homepage),
     path('saved_cities', views.saved_cities),
-    path('save', views.save_new_city)
+    path('save', views.save_new_city),
+    path('mycitiesplot', views.my_cities_plot)
 ]

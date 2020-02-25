@@ -93,3 +93,10 @@ def save_new_city(request):
     City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user)
 
     return redirect('/homepage')
+
+def my_cities_plot(request):
+    this_user = user.objects.get(id=request.session['userid'])
+    context = {
+        'user': this_user
+    }
+    return render(request, 'my_plot.html')

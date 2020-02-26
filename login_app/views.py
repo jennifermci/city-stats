@@ -48,11 +48,13 @@ def homepage(request):
         city = 'Seattle'
 
     pollution_r = requests.get(pollution_url.format(city)).json()
-    try:
-        print(pollution_r)
-    except KeyError:
-        messages.error(request, "City name not found.")
-        return redirect ('/homepage')
+
+    # try:
+    #     print(pollution_r[0][0])
+    # except KeyError:
+    #     messages.error(request, "City name not found.")
+    #     return redirect ('/homepage')
+
     aqi = pollution_r['data']['aqi']
     # this is the checks for the color and impact of the AQI
     if aqi < 50:
@@ -117,7 +119,7 @@ def saved_cities(request):
 def save_new_city(request):
     this_user = user.objects.get(id=request.session['userid'])
 
-    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user)
+    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user, impact = request.POST['impact'])
 
     return redirect('/homepage')
 

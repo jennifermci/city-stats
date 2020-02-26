@@ -18,9 +18,9 @@ app.layout = html.Div([
         figure={
             'data': [
                 dict(
-                    x=df['temp'],
-                    y=df['aqi'],
-                    text=df['city_name'],
+                    x=df[df['impact'] == i]['temp'],
+                    y=df[df['impact'] == i]['aqi'],
+                    text=df[df['impact'] == i]['city_name'],
                     mode='markers',
                     opacity=0.7,
                     marker={
@@ -28,15 +28,13 @@ app.layout = html.Div([
                         'line': {'width': 0.5, 'color': 'white'}
                     },
                     name=i
-                ) for i in df.city_name.unique()
+                ) for i in df.impact.unique()
             ],
             'layout': dict(
                 xaxis={'type': 'scatter', 'title': 'Temperature', 'range': [0,150]},
                 yaxis={'title': 'Air Quality Index', 'range': [0,150]},
                 margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 legend={'x': 0, 'y': 1},
-                width = '500px',
-                height = '500px',
                 hovermode='closest'
             )
         }

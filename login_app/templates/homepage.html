@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+    <link rel="stylesheet"  href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Welcome!</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
+  <div class="container-fluid">
+  <!-------------------------------------------------------------------------------------------------------- nav bar  -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Welcome!</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,50 +26,62 @@
             <li class="nav-item">
               <a class="nav-link" href="/saved_cities">Save Cities</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li>
+            
             <li class="nav-item">
               <a class="nav-link" href="/mycitiesplot">Plot My Cities</a>
             </li>
           </ul>
         </div>
-      </nav>
+    </nav>
+      <!------------------------------------------------------------------------------------------------ input for city -->
+
+      
+
       <form action  = "/homepage" method="POST">
         {% csrf_token %}
-        <p>City:<input type="text" name='city'></p>
+        <div class='centerBar'>
+        <div class='searchBar'><p>Search a City:<input type="text" name='city'></p></div>
         <button type="submit">Get City Stats</button>
-    </form>
-    {% if messages %}
-    <ul class="messages">    
-        {% for message in messages %}    
-        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
-        {% endfor %}
-    {% endif %}
-
-    <form action="/save" method ="POST">
-      {% csrf_token %}
-        <input type="hidden" name='savecity' value ="{{city_weather.city}}">
-        <p>Current Weather in {{city_weather.city}}:</p>
-        <input type="hidden" name='temp' value ="{{city_weather.temperature}}">
-        <p>Temperature = {{city_weather.temperature}}°Fahrenheit</p>
-        <p><img src = 'http://openweathermap.org/img/wn/{{city_weather.icon}}@2x.png'></p>
-        <div class="container-fluid">
-          <small>{{city_AQI.city}} Air Quality Index:</small> 
-          <input type="hidden" name='aqi' value ="{{city_AQI.aqi}}">
-          <div class="container-fluid" >{{city_AQI.aqi}}</div>
-          <div class="container-fluid" >{{city_AQI.impact}}</div>
         </div>
-        <br>
-        <button type="submit">Save City Data!</button>
+      </form>
+
+      {% if messages %}
+      <ul class="messages">    
+          {% for message in messages %}    
+          <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
+          {% endfor %}
+      </ul>
+      {% endif %}
+
+      <form action="/save" method ="POST">
+        {% csrf_token %}
+        <!---------------------------------------------------------------------------------------------------- weather output box -->
+        <div class='infoDisplayed'>
+          <div class='temp'>
+            
+            <input type="hidden" name='savecity' value ="{{city_weather.city}}">
+            <p>Current Weather in {{city_weather.city}}:</p>
+            <input type="hidden" name='temp' value ="{{city_weather.temperature}}">
+            <p>Temperature = {{city_weather.temperature}}°Fahrenheit</p>
+            <p><img src = 'http://openweathermap.org/img/wn/{{city_weather.icon}}@2x.png'></p>
+            
+          </div>
+          <!---------------------------------------------------------------------------------------------------- AQI output box -->
+          <div class="AQIbox" style='background-color:{{city_AQI.color}};'>
+            
+            <div>{{city_AQI.city}} Air Quality Index:</div> 
+            <input type="hidden" name='aqi' value ="{{city_AQI.aqi}}">
+            <div  class='AQI'>{{city_AQI.aqi}}</div>
+            <div  class="impact">{{city_AQI.impact}}</div>
+
+            
+          </div>
+        <!------------------------------------------------------------------------------------ this is the tester for the widget -->
+      </div>
+       
+        <div class="button"><button type="submit">Save City Data!</button></div>
     </form>
+    
+  </div>
 </body>
 </html>

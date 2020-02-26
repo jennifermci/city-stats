@@ -48,17 +48,39 @@ def homepage(request):
         city = 'Seattle'
 
     pollution_r = requests.get(pollution_url.format(city)).json()
-    
     try:
         print(pollution_r)
     except KeyError:
         messages.error(request, "City name not found.")
         return redirect ('/homepage')
+    aqi = pollution_r['data']['aqi']
+    # this is the checks for the color and impact of the AQI
+    if aqi < 50:
+        color = '#096'
+        impact = "Good"
+    elif aqi < 100:
+        color = '#ffde33'
+        impact = "Moderate"
+    elif aqi <150:
+        color = '#ff9933'
+        impact = "Unhealthy for sensative groups"
+    elif aqi < 200:
+        color = '#c03'
+        impact = "Unhealthy"
+    elif aqi < 300:
+        color = '#609'
+        impact = "Very unhealthy"
+    elif aqi < 500:
+        color = '#7e0023'
+        impact = "Hazardous"
+
+  
 
     city_AQI = {
         'city' : city,
-        'aqi' : pollution_r['data']['aqi'],
-        'impact': pollution_r['status'],
+        'aqi' : aqi,
+        'impact': impact,
+        'color' : color,
     }
 
     weather_url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=6aac762c309ab62e1a9c2663d6aff64a'

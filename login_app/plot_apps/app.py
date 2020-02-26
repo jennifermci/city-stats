@@ -24,9 +24,10 @@ app.layout = html.Div([
                     text=df['city_name'],
                     mode='markers',
                     opacity=0.7,
-                    marker={
-                        'size': 15,
-                        'line': {'width': 0.5, 'color': 'white'}
+                    markers={
+                        'size': 40,
+                        'color' : 'rgba(135, 206, 250, 0.5)',
+                        'line': {'width': 0.5,}
                     },
                     name=i
                 ) for i in df.city_name.unique()
@@ -36,8 +37,7 @@ app.layout = html.Div([
                 yaxis={'title': 'Air Quality Index', 'range': [0,150]},
                 margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 legend={'x': 0, 'y': 1},
-                width = '500px',
-                height = '500px',
+
                 hovermode='closest'
             )
         }

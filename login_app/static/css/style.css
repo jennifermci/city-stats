@@ -1,3 +1,13 @@
+.registration {
+    border: 3px solid black;
+    display: inline-block;
+    border-radius: 10px;
+    padding: 5px;
+    vertical-align: top;
+    text-align: center;
+
+}
+
 .temp {
     border: 3px solid black;
     display: inline-block;
@@ -42,4 +52,13 @@
 .button{
     text-align: center;
     margin-top: 100px;
+}
+
+.graph {
+    width: 700px;
+    height: 1000px;
+}
+
+.svg-container{
+    display: inline-block;
 }

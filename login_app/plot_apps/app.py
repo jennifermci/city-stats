@@ -33,11 +33,10 @@ app.layout = html.Div([
                 ) for i in df.city_name.unique()
             ],
             'layout': dict(
-                xaxis={'type': 'scatter', 'title': 'Temperature', 'range': [0,150]},
-                yaxis={'title': 'Air Quality Index', 'range': [0,150]},
+                xaxis={'type': 'scatter', 'title': 'Temperature', 'range': [0,75]},
+                yaxis={'title': 'Air Quality Index', 'range': [0,75]},
                 margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 legend={'x': 0, 'y': 1},
-
                 hovermode='closest'
             )
         }

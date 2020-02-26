@@ -125,7 +125,7 @@ def save_new_city(request):
         return redirect('/')
     this_user = user.objects.get(id=request.session['userid'])
 
-    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user)
+    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user, impact = request.POST['impact'])
 
     return redirect('/homepage')
 

@@ -57,3 +57,4 @@ class City(models.Model):
     temp = models.IntegerField()
     aqi = models.IntegerField()
     added_by = models.ForeignKey(user, related_name='cities', on_delete = models.CASCADE)
+    impact = models.CharField(max_length=45, default = "Super Awesome")

@@ -44,6 +44,7 @@
             <th scope="col">Temperature</th>
             <th scope="col">Air Pollution</th>
             <th scope="col">Delete</th>
+            <th scope="col">Impact</th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +55,7 @@
             <td>{{each.temp}}</td>
             <td>{{each.aqi}}</td>
             <td><a href="/destroy/{{each.id}}">Delete City</a></td>
+            <td>{{each.impact}}</td>
           </tr>
           {% endfor %}
         </tbody>

@@ -10,5 +10,7 @@ urlpatterns = [
     path('homepage', views.homepage),
     path('saved_cities', views.saved_cities),
     path('save', views.save_new_city),
-    path('mycitiesplot', views.my_cities_plot)
+    path('mycitiesplot', views.my_cities_plot),
+    path('logout', views.logout),
+    path('destroy/<int:city_id>', views.destroy)
 ]

@@ -40,6 +40,8 @@ def login(request):
 # ------------------------------------------------------------------------------------------------------------------end login/logout and registration form
 
 def homepage(request):
+    if 'userid' not in request.session:
+        return redirect('/')
     pollution_url = 'https://api.waqi.info/feed/{}/?token=7d948b48a98a28662fa192ada26908dab5923434'
     
     if request.method=='POST':
@@ -48,11 +50,13 @@ def homepage(request):
         city = 'Seattle'
 
     pollution_r = requests.get(pollution_url.format(city)).json()
+
     try:
         print(pollution_r)
     except KeyError:
         messages.error(request, "City name not found.")
         return redirect ('/homepage')
+
     aqi = pollution_r['data']['aqi']
     # this is the checks for the color and impact of the AQI
     if aqi < 50:
@@ -107,6 +111,8 @@ def homepage(request):
     return render(request, 'homepage.html', context)
 
 def saved_cities(request):
+    if 'userid' not in request.session:
+        return redirect('/')
     this_user = user.objects.get(id=request.session['userid'])
     these_cities = City.objects.filter(added_by = this_user)
     context = {
@@ -115,6 +121,8 @@ def saved_cities(request):
     return render(request, 'saved_cities.html', context)
 
 def save_new_city(request):
+    if 'userid' not in request.session:
+        return redirect('/')
     this_user = user.objects.get(id=request.session['userid'])
 
     City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user)
@@ -122,8 +130,17 @@ def save_new_city(request):
     return redirect('/homepage')
 
 def my_cities_plot(request):
+    if 'userid' not in request.session:
+        return redirect('/')
     this_user = user.objects.get(id=request.session['userid'])
     context = {
         'user': this_user
     }
-    return render(request, 'my_plot.html')
+    return render(request, 'my_plot.html', context)
+
+def destroy(request, city_id):
+    if 'userid' not in request.session:
+        return redirect('/')
+    c = City.objects.get(id=city_id)
+    c.delete()
+    return redirect('/saved_cities')

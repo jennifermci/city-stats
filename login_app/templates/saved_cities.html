@@ -28,6 +28,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/mycitiesplot">Plot My Cities</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Log Out</a>
+            </li>
           </ul>
         </div>
       </nav>
@@ -40,6 +43,7 @@
             <th scope="col">City</th>
             <th scope="col">Temperature</th>
             <th scope="col">Air Pollution</th>
+            <th scope="col">Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +53,7 @@
             <td>{{each.city_name}}</td>
             <td>{{each.temp}}</td>
             <td>{{each.aqi}}</td>
+            <td><a href="/destroy/{{each.id}}">Delete City</a></td>
           </tr>
           {% endfor %}
         </tbody>

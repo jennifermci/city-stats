@@ -20,4 +20,5 @@ urlpatterns = [
     path('', include('login_app.urls')),
     path('weather', include('weather_app.urls')),
     path('pollution', include('pollution_app.urls')),
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
 ]

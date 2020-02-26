@@ -3,6 +3,12 @@ from .models import *
 from django.contrib import messages
 import bcrypt
 import requests
+from django_plotly_dash import DjangoDash
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from login_app.graph_apps import *
+
 
 def index(request):
     return render(request,'index.html')
@@ -44,7 +50,7 @@ def homepage(request):
     pollution_r = requests.get(pollution_url.format(city)).json()
     
     try:
-        print(pollution_r['status'])
+        print(pollution_r)
     except KeyError:
         messages.error(request, "City name not found.")
         return redirect ('/homepage')
@@ -61,7 +67,7 @@ def homepage(request):
     weather_r = requests.get(weather_url.format(city)).json()
 
     try:
-        print(weather_r['main']['temp'])
+        print(weather_r)
     except KeyError:
         messages.error(request, "City name not found.")
         return redirect ('/homepage')
@@ -71,8 +77,7 @@ def homepage(request):
         'temperature':weather_r['main']['temp'],
         'icon': weather_r['weather'][0]['icon']
     }
-
-
+    
     context = {
         'city_weather':city_weather,
         'city_AQI' : city_AQI

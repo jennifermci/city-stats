@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {%load plotly_dash%}
     <title>My Cities Plotted</title>
 </head>
 <body>
-    
+    <h1>My Cities Plotted:</h1>
+
+    <div style= "width: 500px; height: 500px;">
+    {%plotly_app name="SimpleExample"%}
+    </div>
+
+    <a href="/homepage"><h1>Return</h1></a>
 </body>
 </html>

@@ -1,6 +1,7 @@
 
 from django.urls import path
 from . import views
+from login_app.graph_apps import app
 
 urlpatterns = [
     path('', views.index),

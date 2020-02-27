@@ -7,7 +7,9 @@ from django_plotly_dash import DjangoDash
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from login_app.graph_apps import *
+from login_app.graph_apps import app
+import pandas as pd
+import sqlite3
 
 
 def index(request):
@@ -52,12 +54,29 @@ def homepage(request):
     pollution_r = requests.get(pollution_url.format(city)).json()
 
     try:
-        print(pollution_r)
-    except KeyError:
+        print(pollution_r['data']['aqi'])
+    except:
+        messages.error(request, "City name not found.")
+        return redirect ('/homepage')
+    
+    weather_url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=6aac762c309ab62e1a9c2663d6aff64a'
+
+
+    weather_r = requests.get(weather_url.format(city)).json()
+
+    try:
+        print(weather_r['main']['temp'])
+    except:
         messages.error(request, "City name not found.")
         return redirect ('/homepage')
 
+
     aqi = pollution_r['data']['aqi']
+
+    if aqi == "-":
+        messages.error(request, "City has no data for AQI")
+        return redirect ('/homepage')
+    
     # this is the checks for the color and impact of the AQI
     if aqi < 50:
         color = '#096'
@@ -86,17 +105,6 @@ def homepage(request):
         'impact': impact,
         'color' : color,
     }
-
-    weather_url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=6aac762c309ab62e1a9c2663d6aff64a'
-
-
-    weather_r = requests.get(weather_url.format(city)).json()
-
-    try:
-        print(weather_r)
-    except KeyError:
-        messages.error(request, "City name not found.")
-        return redirect ('/homepage')
 
     city_weather = {
         'city': city,
@@ -132,10 +140,49 @@ def save_new_city(request):
 def my_cities_plot(request):
     if 'userid' not in request.session:
         return redirect('/')
+    
     this_user = user.objects.get(id=request.session['userid'])
+
+    app = DjangoDash('SimpleExample')   # replaces dash.Dash
+    print('IM UPDATING PLOT FROM VIEWS')
+    cnx = sqlite3.connect('db.sqlite3')
+    
+    print(this_user.id)
+    
+    df = pd.read_sql_query(f"SELECT * FROM login_app_city WHERE added_by_id = {this_user.id}", cnx)
+    
+    app.layout = html.Div([
+        dcc.Graph(
+            id='temp-vs-airpollution',
+            figure={
+                'data': [
+                    dict(
+                        x=df[df['impact'] == i]['temp'],
+                        y=df[df['impact'] == i]['aqi'],
+                        text=df[df['impact'] == i]['city_name'],
+                        mode='markers',
+                        opacity=0.7,
+                        marker={
+                            'size': 15,
+                            'line': {'width': 0.5, 'color': 'white'}
+                        },
+                        name=i
+                    ) for i in df.impact.unique()
+                ],
+                'layout': dict(
+                    xaxis={'type': 'scatter', 'title': 'Temperature', 'range': [0,150]},
+                    yaxis={'title': 'Air Quality Index', 'range': [0,150]},
+                    margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                    legend={'x': 0, 'y': 1},
+                    hovermode='closest'
+                )
+            }
+        )
+    ])
     context = {
-        'user': this_user
+        'user': this_user,
     }
+
     return render(request, 'my_plot.html', context)
 
 def destroy(request, city_id):
@@ -143,4 +190,6 @@ def destroy(request, city_id):
         return redirect('/')
     c = City.objects.get(id=city_id)
     c.delete()
+    cnx = sqlite3.connect('db.sqlite3')
+    df = pd.read_sql_query("SELECT * FROM login_app_city", cnx)
     return redirect('/saved_cities')

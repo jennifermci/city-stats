@@ -40,6 +40,33 @@
           </nav>
 
           <h1>My Cities Plotted:</h1>
+          <div>
+            <form action="/mycitiesplot" method='POST'>
+              {% csrf_token %}
+            <label name="xaxis">Select your X-axis data:</label>
+            <select name="xaxis">
+              <option value="temp">Temperature</option>
+              <option value="wind">Wind Speed</option>
+              <option value="pressure">Environmental Pressure</option>
+              <option value="aqi">AQI</option>
+              <option value="co">Carbon Monoxide</option>
+            </select>
+  
+        </div>
+          <div>
+            
+            <label name="yaxis">Select your Y-axis data:</label>
+            <select name="yaxis">
+              <option value="temp">Temperature</option>
+              <option value="wind">Wind Speed</option>
+              <option value="pressure">Environmental Pressure</option>
+              <option value="aqi">AQI</option>
+              <option value="co">Carbon Monoxide</option>
+            </select>
+  
+          </div>
+          <button type='submit'>Plot!</button>
+        </form>
 
           <div class='{%plotly_class name="SimpleExample"%} card' style='height:100%; width:100%'>
           {%plotly_app name="SimpleExample" ratio=0.65%}

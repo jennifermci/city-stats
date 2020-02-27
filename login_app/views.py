@@ -72,6 +72,7 @@ def homepage(request):
 
 
     aqi = pollution_r['data']['aqi']
+    
 
     if aqi == "-":
         messages.error(request, "City has no data for AQI")

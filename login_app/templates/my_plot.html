@@ -15,7 +15,7 @@
     <div class="container-fluid">
         <!-------------------------------------------------------------------------- This is the top nav bar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <!-- <a class="navbar-brand" href="/homepage">Welcome!</a> -->
+
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -38,12 +38,42 @@
               </ul>
             </div>
           </nav>
-
+<!--------------------------------------------------------------------------- This is the end of the nav bar -->
           <h1>My Cities Plotted:</h1>
+<!----------------------------------------------------------------- this is the graph for the plots -->
+          <div>
+              <form action="/mycitiesplot" method='POST'>
+                {% csrf_token %}
+              <label for="xaxis">Select your X-axis data:</label>
+              <select id="xaxis">
+                <option value="temp">Temperature</option>
+                <option value="wind">Wind Speed</option>
+                <option value="pressure">Environmental Pressure</option>
+                <option value="aqi">AQI</option>
+                <option value="co">Carbon Monoxide</option>
+              </select>
+
+          </div>
+            <div>
+              
+              <label for="yaxis">Select your Y-axis data:</label>
+              <select id="yaxis">
+                <option value="temp">Temperature</option>
+                <option value="wind">Wind Speed</option>
+                <option value="pressure">Environmental Pressure</option>
+                <option value="aqi">AQI</option>
+                <option value="co">Carbon Monoxide</option>
+              </select>
+
+            </div>
+            <button type='submit'>Plot!</button>
+          </form>
 
           <div class='{%plotly_class name="SimpleExample"%} card' style='height:100%; width:100%'>
           {%plotly_app name="SimpleExample" ratio=0.65%}
           </div>
+
+
     </div>
 
 </body>

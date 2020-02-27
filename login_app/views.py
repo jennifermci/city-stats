@@ -7,7 +7,7 @@ from django_plotly_dash import DjangoDash
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from login_app.graph_apps import app
+
 import pandas as pd
 import sqlite3
 

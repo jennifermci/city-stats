@@ -10,6 +10,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 cnx = sqlite3.connect('db.sqlite3')
 
+
 df = pd.read_sql_query("SELECT * FROM login_app_city", cnx)
 
 app.layout = html.Div([
@@ -42,4 +43,5 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
+    print('hello')
     app.run_server(debug=True)

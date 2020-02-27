@@ -17,7 +17,7 @@ class userManager(models.Manager):
             errors ["reg_fname"] = "First name can only contain letters"
 
         if len(postData['last_name']) < 2:
-            errors ["reg_lname"] = "Last name should be at least 3 characters"
+            errors ["reg_lname"] = "Last name should be at least 2 characters"
         elif not NAME_REGEX.match(postData['last_name']):
             errors ["reg_lname"] = "Last name can only contain letters"
 

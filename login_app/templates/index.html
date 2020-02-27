@@ -8,51 +8,141 @@
     <title>Login</title>
 </head>
 <body>
-    <div class="container-fluid">
-        <div><h1>Welcome!</h1></div>
-        <!------------------------------------------------------------------------------- this is the left-hand sided REGISTRATION form -->
-        <div class="d-inline-block align-top border border-dark">
-        
-            <h2>Register</h2>
-            {% if messages %}
-            <ul class="messages">    
-            {% for message in messages %}    
-            {% if message.extra_tags == "reg" %}
-            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
-            {% endif %}  
-            {% endfor %}
-            </ul>
-            {% endif %}
-            <form action='/register' method='post'>
-                {% csrf_token %}
-                <p>First Name <input  type='text' name='first_name'></p>
-                <p>Last Name <input type='text' name='last_name'></p>
-                <p>Email <input type='text' name='email'></p>
-                <p>Password: <input type='password' name='password'></p>  
-                <p>*Password should be at least 8 characters</p>
-                <p>Confirm PW: <input type='password' name='confirmPW'></p>              
-                <button class="button">Register</button> 
-            </form>        
-        </div>
-        <!--=----------------------------------------------------------------------------------------======== right-hand sided LOGIN -->
-        <div class="d-inline-block align-top border border-dark" >
-            <h2>Login</h2>
-            {% if messages %}
-            <ul class="messages">    
-            {% for message in messages %}  
-            {% if message.extra_tags == "log" %}
-            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
-            {% endif %}  
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome!</h1>
+        <p class="lead">This application is to show you the weather and the current Air Quality Index (AQI) for any city</p>
+        <hr class="my-4">
+        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="https://airnow.gov/index.cfm?action=aqibasics.aqi" role="button">Learn more</a>
+        </p>
+      </div>
+
+
+    <div class="container">
+        <div class="row">
+        <!---------------------------------------------- this is the left sided REGISTRATION form -->
+            <div class="col-sm-6">
             
-            {% endfor %}
-            </ul>
-            {% endif %}
-            <form action='/login' method='post'>
-                {% csrf_token %}
-                <p>Email <input type='text' name='email'></p>
-                <p>Password: <input type='password' name='password'></p>              
-                <button class="button">Login</button> 
-            </form>   
+                
+                {% if messages %}
+                <ul class="messages">    
+                {% for message in messages %}    
+                {% if message.extra_tags == "reg" %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
+                {% endif %}  
+                {% endfor %}
+                </ul>
+                {% endif %}
+
+                <form class="form-horizontal" action='/register' method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                      <div id="legend">
+                        <legend class="">Register</legend>
+                      </div>
+                      <div class="control-group">
+                        <label class="control-label"  for="first_name">First Name</label>
+                        <div class="controls">
+                          <input type="text" id="first_name" name="first_name" class="form-control input-lg">
+                          <small class="form-text text-muted">First name must contain at least 2 characters</small>
+                        </div>
+                      </div>
+                      <div class="control-group">
+                        <label class="control-label"  for="last_name">Last Name</label>
+                        <div class="controls">
+                          <input type="text" id="last_name" name="last_name" class="form-control input-lg">
+                          <small class="form-text text-muted">Last name must contain at least 2 characters</small>
+                        </div>
+                      </div>
+                   
+                      <div class="control-group">
+                        <label class="control-label" for="email">E-mail</label>
+                        <div class="controls">
+                          <input type="email" id="email" name="email" placeholder="something@email.com" class="form-control input-lg">
+                          <small class="form-text text-muted">Please provide your E-mail</small>
+                        </div>
+                      </div>
+                   
+                      <div class="control-group">
+                        <label class="control-label" for="password">Password</label>
+                        <div class="controls">
+                          <input type="password" id="password" name="password"  class="form-control input-lg">
+                          <small class="form-text text-muted">Password should be at least 8 characters</small>
+                        </div>
+                      </div>
+                   
+                      <div class="control-group">
+                        <label class="control-label"  for="confirmPW">Password (Confirm)</label>
+                        <div class="controls">
+                          <input type="password" id="confirmPW" name="confirmPW" class="form-control input-lg">
+                          <small class="form-text text-muted">Please confirm password</small>
+                        </div>
+                      </div>
+                   
+                      <div class="control-group">
+                        <!-- Button -->
+                        <div class="controls">
+                          <button class="btn btn-primary">Register</button>
+                        </div>
+                      </div>
+                    </fieldset>
+                </form>
+            </div>
+
+        <!--=-------------------------------------------------------------------------------======== right sided LOGIN -->
+            <div class="col-sm-6" >
+
+                
+                {% if messages %}
+                <ul class="messages">    
+                {% for message in messages %}  
+                {% if message.extra_tags == "log" %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>  
+                {% endif %}                  
+                {% endfor %}
+                </ul>
+                {% endif %}
+
+                <form class="form-horizontal" action='/login' method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                      <div id="legend">
+                        <legend class="">Login</legend>
+                      </div>
+                      <div class="control-group">
+                        <label class="control-label"  for="email">Email</label>
+                        <div class="controls">
+                          <input type="text" id="email" name="email" placeholder="something@email.com" class="form-control input-lg">
+                          <p class="help-block"></p>
+                        </div>
+                      </div>
+                   
+                      <div class="control-group">
+                        <label class="control-label" for="password">Password</label>
+                        <div class="controls">
+                          <input type="password" id="password" name="password" placeholder="" class="form-control input-lg">
+                          <p class="help-block"></p>
+                        </div>
+                      </div>       
+                   
+                      <div class="control-group">
+                        <!-- Button -->
+                        <div class="controls">
+                          <button class="btn btn-primary">Login</button>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </form>
+
+                <!-- <form action='/login' method='post'>
+                    {% csrf_token %}
+                    <p>Email <input type='text' name='email'></p>
+                    <p>Password: <input type='password' name='password'></p>              
+                    <button class="button">Login</button> 
+                </form>    -->
+
+            </div>
 
         </div>
     </div>

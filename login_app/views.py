@@ -193,3 +193,6 @@ def destroy(request, city_id):
     cnx = sqlite3.connect('db.sqlite3')
     df = pd.read_sql_query("SELECT * FROM login_app_city", cnx)
     return redirect('/saved_cities')
+
+
+    

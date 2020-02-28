@@ -7,9 +7,11 @@ from django_plotly_dash import DjangoDash
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-
+from django.core import serializers
+from django.http import JsonResponse
 import pandas as pd
 import sqlite3
+import json
 
 
 def index(request):
@@ -72,11 +74,11 @@ def homepage(request):
 
 
     aqi = pollution_r['data']['aqi']
-
+    
     if aqi == "-":
         messages.error(request, "City has no data for AQI")
         return redirect ('/homepage')
-    
+
     # this is the checks for the color and impact of the AQI
     if aqi < 50:
         color = '#096'
@@ -245,8 +247,12 @@ def my_cities_plot(request):
             }
         )
     ])
+
+    all_users = user.objects.all()
+
     context = {
         'user': this_user,
+        'users': all_users
     }
 
     return render(request, 'my_plot.html', context)
@@ -256,9 +262,116 @@ def destroy(request, city_id):
         return redirect('/')
     c = City.objects.get(id=city_id)
     c.delete()
-    cnx = sqlite3.connect('db.sqlite3')
-    df = pd.read_sql_query("SELECT * FROM login_app_city", cnx)
     return redirect('/saved_cities')
 
 
+
+
+# def other_user_plot(request, id):
+#     other_user = user.objects.get(id=id)
+
+
+#     app = DjangoDash('other_user')   # replaces dash.Dash
+
+#     cnx = sqlite3.connect('db.sqlite3')
     
+    
+#     df = pd.read_sql_query(f"SELECT * FROM login_app_city WHERE added_by_id = {other_user.id}", cnx)
+    
+#     if request.method == 'POST':
+#         xvalue = request.POST['xaxis']
+#         yvalue = request.POST['yaxis']
+#     else:
+#         xvalue = 'temp'
+#         yvalue = 'aqi'
+
+#     if xvalue == 'temp':
+#         xtitle = "Temperature"
+#     if xvalue == 'wind':
+#         xtitle = "Wind Speed"
+#     if xvalue == 'pressure':
+#         xtitle = "Environmental Pressure"
+#     if xvalue == 'co':
+#         xtitle = "Carbon Monoxide"
+#     if xvalue == 'aqi':
+#         xtitle = "Air Quality Index"
+
+#     if yvalue == 'temp':
+#         ytitle = "Temperature"
+#     if yvalue == 'wind':
+#         ytitle = "Wind Speed"
+#     if yvalue == 'pressure':
+#         ytitle = "Environmental Pressure"
+#     if yvalue == 'co':
+#         ytitle = "Carbon Monoxide"
+#     if yvalue == 'aqi':
+#         ytitle = "Air Quality Index"
+
+#     xrangelimit = 150
+#     yrangelimit = 150
+
+#     xrangemin = 0
+#     yrangemin = 0
+
+#     if xvalue == 'pressure':
+#         xrangelimit = 1050
+#         xrangemin = 1000
+#     if yvalue == 'pressure':
+#         yrangelimit = 1050
+#         yrangemin = 1000
+
+#     if xvalue == 'co':
+#         xrangelimit = 20
+#     if yvalue == 'co':
+#         yrangelimit = 20
+
+#     if xvalue == 'wind':
+#         xrangelimit = 20
+#     if yvalue == 'wind':
+#         yrangelimit = 20
+
+#     if xvalue == 'temp':
+#         xrangelimit = 120
+#     if yvalue == 'temp':
+#         yrangelimit = 120
+
+
+#     app.layout = html.Div([
+#         dcc.Graph(
+#             id='temp-vs-airpollution',
+#             figure={
+#                 'data': [
+#                     dict(
+#                         x=df[df['impact'] == i][xvalue],
+#                         y=df[df['impact'] == i][yvalue],
+#                         text=df[df['impact'] == i]['city_name'],
+#                         mode='markers',
+#                         opacity=0.7,
+#                         marker={
+#                             'size': 15,
+#                             'line': {'width': 0.5, 'color': 'white'}
+#                         },
+#                         name=i
+#                     ) for i in df.impact.unique()
+#                 ],
+#                 'layout': dict(
+#                     xaxis={'type': 'scatter', 'title': xtitle, 'range': [xrangemin,xrangelimit]},
+#                     yaxis={'title': ytitle, 'range': [yrangemin,yrangelimit]},
+#                     margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+#                     legend={'x': 0, 'y': 1},
+#                     hovermode='closest'
+#                 )
+#             }
+#         )
+#     ])
+#     context = {
+#         'other_user': other_user
+#     }
+#     return render(request, 'other_user.html', context)
+
+def other_user_plot_ajax(request, id):
+    this_user = user.objects.get(id=id)
+
+    plot_data = serializers.serialize('json', City.objects.filter(added_by = this_user))
+
+    return JsonResponse(plot_data, safe=False)

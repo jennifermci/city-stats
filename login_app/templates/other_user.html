@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {%load plotly_dash%}
+    <title>Document</title>
+</head>
+<body>
+    <div class='{%plotly_class name="other_user"%} card' style='height:100%; width:100%'>
+        <p>{{other_user.first_name}} {{other_user.last_name}}'s Plot</p>
+        {%plotly_app name="other_user" ratio=0.95%}
+        </div>
+</body>
+</html>

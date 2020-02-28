@@ -9,6 +9,56 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     {%load plotly_dash%}
     <title>My Cities Plotted</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+            $(document).ready(function () {
+                function get_other_plot(url) {
+                  $(".here").html(`<table class="table">
+                        <thead>
+                            <th>City</th>
+                            <th>Temperature</th>
+                            <th>Air Pollution</th>
+                            <th>Impact</th>
+                            <th>Wind</th>
+                            <th>Carbon</th>
+                            <th>Pressure</th>
+                        </thead>
+                        <tbody class="addhere"></tbody>
+                    </table>`)                  
+                    $.get(url, function (data) {
+                        var plot_data = JSON.parse(data);
+                        var tableRow = '';
+                        for (let each of plot_data) {
+                          tableRow += `<tr>
+                                <td>${each.fields.city_name}
+                                </td>
+                                <td>${each.fields.temp}
+                                </td>
+                                <td>${each.fields.aqi}
+                                </td>
+                                <td>${each.fields.impact}
+                                </td>
+                                <td>${each.fields.wind}
+                                </td>
+                                <td>${each.fields.co}
+                                </td>
+                                <td>${each.fields.pressure}
+                                </td>
+                            </tr>`;
+                        }
+                        $(".addhere").html(tableRow)
+                    })
+                }
+            
+            $(document).on('click', '.compare', function (e) {
+              e.preventDefault();
+              get_other_plot($(this).attr('href'));
+            })
+
+          })
+    </script>
+    
 </head>
 <body>
 
@@ -69,9 +119,17 @@
         </form>
 
           <div class='{%plotly_class name="SimpleExample"%} card' style='height:100%; width:100%'>
-          {%plotly_app name="SimpleExample" ratio=0.65%}
+          {%plotly_app name="SimpleExample" ratio=0.95%}
+          <div>THIS IS THE NEW PLOT</div>
           </div>
+          <h3>Compare with another User:</h3>
+          {% for each in users %}
+          <ul>
+            <li><a class = "compare" href="/ajax/otheruserplot/{{each.id}}">{{each.first_name}} {{each.last_name}}'s Cities</a></li>
+          </ul>
+          {% endfor %}
+          <div id="plotly-div"></div>
+          <div class = "here"></div>
     </div>
-
 </body>
 </html>

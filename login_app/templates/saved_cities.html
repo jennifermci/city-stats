@@ -11,7 +11,7 @@
   <div class='container-fluid'>
   <!----------------------------------------------------------------------------------------- This is the top nav bar -->
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <!-- <a class="navbar-brand" href="/homepage">Welcome!</a> -->
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -38,24 +38,28 @@
 
       <table class="table table-striped">
         <thead>
-          <tr>
-            <th scope="col">#</th>
+          <tr>            
             <th scope="col">City</th>
             <th scope="col">Temperature</th>
-            <th scope="col">Air Pollution</th>
-            <th scope="col">Delete</th>
+            <th scope="col">Air Pollution</th>            
             <th scope="col">Impact</th>
+            <th scope="col">Wind</th>
+            <th scope="col">Carbon Monozide</th>
+            <th scope="col">Pressure</th>
+            <th scope="col">Delete</th>
           </tr>
         </thead>
         <tbody>
           {% for each in cities %}
-          <tr>
-            <td>{{each.id}}</td>
+          <tr>            
             <td>{{each.city_name}}</td>
             <td>{{each.temp}}</td>
-            <td>{{each.aqi}}</td>
-            <td><a href="/destroy/{{each.id}}">Delete City</a></td>
+            <td>{{each.aqi}}</td>            
             <td>{{each.impact}}</td>
+            <td>{{each.wind}}</td>
+            <td>{{each.co}}</td>
+            <td>{{each.pressure}}</td>
+            <td><a href="/destroy/{{each.id}}">Delete City</a></td>
           </tr>
           {% endfor %}
         </tbody>

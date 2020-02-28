@@ -58,3 +58,6 @@ class City(models.Model):
     aqi = models.IntegerField()
     added_by = models.ForeignKey(user, related_name='cities', on_delete = models.CASCADE)
     impact = models.CharField(max_length=45, default = "Super Awesome")
+    pressure = models.FloatField(default =0)
+    wind = models.FloatField(default =0)
+    co = models.FloatField(default =0)

@@ -52,18 +52,36 @@ def homepage(request):
         city = 'Seattle'
 
     pollution_r = requests.get(pollution_url.format(city)).json()
-
+    # print(pollution_r)
     try:
         print(pollution_r['data']['aqi'])
     except:
         messages.error(request, "City name not found.")
+        return redirect ('/homepage')
+
+    try:
+        print(pollution_r['data']['iaqi']['w']['v'] )
+    except:
+        messages.error(request, "No wind data for this city")
+        return redirect ('/homepage')
+
+    try:
+        (pollution_r['data']['iaqi']['co']['v'] )
+    except:
+        messages.error(request, "No carbon monoxide data for this city")
+        return redirect ('/homepage')
+
+    try:
+        (pollution_r['data']['iaqi']['p']['v'] )
+    except:
+        messages.error(request, "No environmental pressure data for this city")
         return redirect ('/homepage')
     
     weather_url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=6aac762c309ab62e1a9c2663d6aff64a'
 
 
     weather_r = requests.get(weather_url.format(city)).json()
-
+    print(weather_r)
     try:
         print(weather_r['main']['temp'])
     except:
@@ -98,13 +116,21 @@ def homepage(request):
         color = '#7e0023'
         impact = "Hazardous"
 
-  
+    co = pollution_r['data']['iaqi']['co']['v']
+    
+    wind = pollution_r['data']['iaqi']['w']['v']
+    
+    pressure = pollution_r['data']['iaqi']['p']['v']
+    
 
     city_AQI = {
         'city' : city,
         'aqi' : aqi,
         'impact': impact,
         'color' : color,
+        'wind': wind,
+        'co': co,
+        'pressure': pressure
     }
 
     city_weather = {
@@ -134,7 +160,7 @@ def save_new_city(request):
         return redirect('/')
     this_user = user.objects.get(id=request.session['userid'])
 
-    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user, impact = request.POST['impact'])
+    City.objects.create(city_name=request.POST['savecity'], temp= int(float(request.POST['temp'])), aqi = int(request.POST['aqi']), added_by=this_user, impact = request.POST['impact'], wind = request.POST['wind'], co = float(request.POST['co']), pressure = float(request.POST['pressure']))
 
     return redirect('/homepage')
 
@@ -152,14 +178,106 @@ def my_cities_plot(request):
     
     df = pd.read_sql_query(f"SELECT * FROM login_app_city WHERE added_by_id = {this_user.id}", cnx)
     
+    if request.method == 'POST':
+        xvalue = request.POST['xaxis']
+        yvalue = request.POST['yaxis']
+    else:
+        xvalue = 'temp'
+        yvalue = 'aqi'
+
+    if xvalue == 'temp':
+        xtitle = "Temperature"
+    if xvalue == 'wind':
+        xtitle = "Wind Speed"
+    if xvalue == 'pressure':
+        xtitle = "Environmental Pressure"
+    if xvalue == 'co':
+        xtitle = "Carbon Monoxide"
+    if xvalue == 'aqi':
+        xtitle = "Air Quality Index"
+
+    if yvalue == 'temp':
+        ytitle = "Temperature"
+    if yvalue == 'wind':
+        ytitle = "Wind Speed"
+    if yvalue == 'pressure':
+        ytitle = "Environmental Pressure"
+    if yvalue == 'co':
+        ytitle = "Carbon Monoxide"
+    if yvalue == 'aqi':
+        ytitle = "Air Quality Index"
+
+    xrangelimit = 150
+    yrangelimit = 150
+
+    xrangemin = 0
+    yrangemin = 0
+
+    if xvalue == 'pressure':
+        xrangelimit = 1050
+        xrangemin = 1000
+    if yvalue == 'pressure':
+        yrangelimit = 1050
+        yrangemin = 1000
+
+    if xvalue == 'co':
+        xrangelimit = 20
+    if yvalue == 'co':
+        yrangelimit = 20
+
+    if xvalue == 'wind':
+        xrangelimit = 20
+    if yvalue == 'wind':
+        yrangelimit = 20
+
+    if xvalue == 'temp':
+        xrangelimit = 120
+    if yvalue == 'temp':
+        yrangelimit = 120
+
+    cities = City.objects.filter(added_by = this_user)
+    
+    for city in cities:
+        if xvalue == 'aqi':
+            if city.aqi > int(xrangelimit):
+                xrangelimit = city.aqi + 10
+        if yvalue == 'aqi':       
+            if city.aqi > int(yrangelimit):
+                yrangelimit = city.aqi + 10
+        if xvalue == 'temp':
+            if city.temp > int(xrangelimit):
+                xrangelimit = city.temp + 10
+        if yvalue == 'temp':       
+            if city.temp > int(yrangelimit):
+                yrangelimit = city.temp + 10
+        if xvalue == 'wind':
+            if city.wind > int(xrangelimit):
+                xrangelimit = city.wind + 10
+        if yvalue == 'wind':       
+            if city.wind > int(yrangelimit):
+                yrangelimit = city.wint + 10
+        if xvalue == 'co':
+            if city.co > int(xrangelimit):
+                xrangelimit = city.co + 10
+        if yvalue == 'co':       
+            if city.co > int(yrangelimit):
+                yrangelimit = city.co + 10
+        if xvalue == 'pressure':
+            if city.pressure > int(xrangelimit):
+                xrangelimit = city.pressure + 10
+        if yvalue == 'pressure':       
+            if city.pressure > int(yrangelimit):
+                yrangelimit = city.pressure + 10
+
+
     app.layout = html.Div([
         dcc.Graph(
             id='temp-vs-airpollution',
             figure={
                 'data': [
                     dict(
-                        x=df[df['impact'] == i]['temp'],
-                        y=df[df['impact'] == i]['aqi'],
+                        x=df[df['impact'] == i][xvalue],
+                        y=df[df['impact'] == i][yvalue],
                         text=df[df['impact'] == i]['city_name'],
                         mode='markers',
                         opacity=0.7,
@@ -171,8 +289,8 @@ def my_cities_plot(request):
                     ) for i in df.impact.unique()
                 ],
                 'layout': dict(
-                    xaxis={'type': 'scatter', 'title': 'Temperature', 'range': [0,150]},
-                    yaxis={'title': 'Air Quality Index', 'range': [0,150]},
+                    xaxis={'type': 'scatter', 'title': xtitle, 'range': [xrangemin,xrangelimit]},
+                    yaxis={'title': ytitle, 'range': [yrangemin,yrangelimit]},
                     margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                     legend={'x': 0, 'y': 1},
                     hovermode='closest'
@@ -195,5 +313,3 @@ def destroy(request, city_id):
     df = pd.read_sql_query("SELECT * FROM login_app_city", cnx)
     return redirect('/saved_cities')
 
-
-    

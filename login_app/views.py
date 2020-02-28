@@ -7,9 +7,11 @@ from django_plotly_dash import DjangoDash
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-
+import json
 import pandas as pd
 import sqlite3
+from django.core import serializers
+from django.http import JsonResponse
 
 
 def index(request):
@@ -150,8 +152,11 @@ def saved_cities(request):
         return redirect('/')
     this_user = user.objects.get(id=request.session['userid'])
     these_cities = City.objects.filter(added_by = this_user)
+    all_users = user.objects.all()
+
     context = {
-        'cities':these_cities
+        'cities':these_cities,
+        'users': all_users
     }
     return render(request, 'saved_cities.html', context)
 
@@ -312,4 +317,9 @@ def destroy(request, city_id):
     cnx = sqlite3.connect('db.sqlite3')
     df = pd.read_sql_query("SELECT * FROM login_app_city", cnx)
     return redirect('/saved_cities')
+
+def other_user_plot_ajax(request, id):
+    this_user = user.objects.get(id=id)
+    plot_data = serializers.serialize('json', City.objects.filter(added_by = this_user))
+    return JsonResponse(plot_data, safe=False)
 

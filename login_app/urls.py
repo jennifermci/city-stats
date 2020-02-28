@@ -13,4 +13,5 @@ urlpatterns = [
     path('mycitiesplot', views.my_cities_plot),
     path('logout', views.logout),
     path('destroy/<int:city_id>', views.destroy),
+    path('ajax/otheruserplot/<id>', views.other_user_plot_ajax),
 ]
